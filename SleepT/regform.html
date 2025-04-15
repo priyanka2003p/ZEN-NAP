@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="regf.css">
+    <title>Registration Portal</title>
+</head>
+<body>
+    <div class="container">
+        <div class="screen">
+            <div class="screen__content">
+                <form class="login" action="dfd.php" method="POST">
+                    <div class="login__field">
+                        <i class="login__icon fas fa-user"></i>
+                        <input type="text" class="login__input" name="username" placeholder="User name / Email" id="username" required>
+                    </div>
+                    <div class="login__field">
+                        <i class="login__icon fas fa-lock"></i>
+                        <input type="password" class="login__input" name="password" placeholder="Password" id="password" required>
+                    </div>
+                    <div class="login__field">
+                        <i class="login__icon fas fa-lock"></i>
+                        <input type="text" class="login__input" name="sleepid" placeholder="Electricity ID" id="sleepid" readonly>
+                    </div>
+                    <button type="submit" class="button login__submit">
+                        <span class="button__text"> Register </span>
+                        <i class="button__icon fas fa-chevron-right"></i>
+                    </button>				
+                </form>                
+                <div class="social-login">
+                    <img src="logo-modified.png" alt="Logo" class="main-logo">
+                </div>
+            </div>
+            <div class="screen__background">
+                <span class="screen__background__shape screen__background__shape4"></span>
+                <span class="screen__background__shape screen__background__shape3"></span>		
+                <span class="screen__background__shape screen__background__shape2"></span>
+                <span class="screen__background__shape screen__background__shape1"></span>
+            </div>		
+        </div>
+    </div>
+    <script>
+        function saveToLocalStorage() {
+  const username = document.getElementById('usernameInput').value; // Get the input value
+  localStorage.setItem('username', username); // Store it in localStorage
+}
+function generateElectricityID() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 6; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+
+        // Set a new electricity ID every time the page is loaded
+        document.getElementById('sleepid').value = generateElectricityID();
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep History - ZEN-NAP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Inherit styles from the main page */
+        html,
+        body {
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background-color: #001019;
+            color: #e0f7fa;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        h1,
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            text-align: left;
+            margin-top: 30px;
+        }
+
+        .history-entry {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .history-entry h3 {
+            color: #ddd;
+            margin-bottom: 5px;
+        }
+
+        .history-entry p {
+            color: #ccc;
+            font-size: 0.9em;
+        }
+
+        .navigation {
+            position: fixed;
+            width: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            transition: width 0.4s ease-in-out, opacity 0.4s ease-in-out, background-color 0.4s ease-in-out;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 20px 0;
+        }
+
+        .navigation:hover {
+            width: 180px;
+            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .navigation ul {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding: 20px 0;
+            margin: 0;
+        }
+
+        .navigation ul li {
+            position: relative;
+            width: 100%;
+            list-style: none;
+            z-index: 3;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 0 15px;
+            border-radius: 8px;
+            margin: 5px 0;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .navigation ul li:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .navigation ul li a {
+            position: relative;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+            text-decoration: none;
+            color: #eee;
+        }
+
+        .navigation ul li a .icon {
+            position: relative;
+            display: block;
+            min-width: 60px;
+            line-height: 60px;
+            font-size: 1.2em;
+            text-align: center;
+            transition: color 0.5s;
+            z-index: 5;
+        }
+
+        .navigation ul li.active a .icon {
+            color: #fff;
+        }
+
+        .navigation ul li a .text {
+            position: relative;
+            color: #eee;
+            font-weight: 400;
+            font-size: 0.9em;
+            letter-spacing: 0.05em;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
+
+        .navigation:hover ul li a .text {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .indicator {
+            position: absolute;
+            right: -10px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #37d1d1, #c09dcd);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.5s;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .indicator::before,
+        .indicator::after {
+            content: '';
+            position: absolute;
+            background: transparent;
+            border-radius: 50%;
+        }
+
+        .indicator::before {
+            top: -20px;
+            width: 30px;
+            height: 20px;
+            border-top-right-radius: 20px;
+            border-top-left-radius: 20px;
+        }
+
+        .indicator::after {
+            bottom: -20px;
+            width: 30px;
+            height: 20px;
+            border-bottom-right-radius: 20px;
+            border-bottom-left-radius: 20px;
+        }
+    </style>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</head>
+
+<body>
+    <div class="navigation">
+        <ul>
+            <li class="list">
+                <a href="profile.html">
+                    <span class="icon"><ion-icon name="person-circle-outline"></ion-icon></span>
+                    <span class="text">Profile</span>
+                </a>
+            </li>
+            <li class="list">
+                <a href="music.html">
+                    <span class="icon"><ion-icon name="musical-notes-outline"></ion-icon></span>
+                    <span class="text">Music</span>
+                </a>
+            </li>
+            <li class="list">
+                <a href="progresstracker.html">
+                    <span class="icon"><ion-icon name="bar-chart-outline"></ion-icon></span>
+                    <span class="text">Progress</span>
+                </a>
+            </li>
+            <li class="list">
+                <a href="recomendations.html">
+                    <span class="icon"><ion-icon name="thumbs-up-outline"></ion-icon></span>
+                    <span class="text">Interested</span>
+                </a>
+            </li>
+
+            <li class="list active">
+                <a href="history.html">
+                    <span class="icon"><ion-icon name="time-outline"></ion-icon></span>
+                    <span class="text">History</span>
+                </a>
+            </li>
+            <li class="list">
+                <a href="sleeplog.html">
+                    <span class="icon"><ion-icon name="document-text-outline"></ion-icon></span>
+                    <span class="text">Log</span>
+                </a>
+            </li>
+
+            <li class="list">
+                <a href="/SleepTrackerFinall/api/logout.php">
+                    <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+            <div class="indicator" style="transform: translateY(calc(70px * 4));"></div>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h1>Your Sleep History</h1>
+
+        <h2>Recent Logs</h2>
+        <div id="recent-logs">
+        </div>
+
+        <h2>Analysis</h2>
+        <div id="sleep-analysis">
+        </div>
+    </div>
+
+    <script>
+        // Placeholder sleep log data (replace with your actual data retrieval)
+        const sleepLogs = [
+            { date: "2025-03-29", duration: 7.5 },
+            { date: "2025-03-28", duration: 6.8 },
+            { date: "2025-03-27", duration: 8.1 },
+            { date: "2025-03-26", duration: 7.0 },
+            { date: "2025-03-25", duration: 6.5 },
+        ];
+
+        const recentLogsDiv = document.getElementById("recent-logs");
+        const sleepAnalysisDiv = document.getElementById("sleep-analysis");
+
+        if (sleepLogs && sleepLogs.length > 0) {
+            sleepLogs.forEach(log => {
+                const logEntry = document.createElement("div");
+                logEntry.classList.add("history-entry");
+                logEntry.innerHTML = `
+                    <h3>${log.date}</h3>
+                    <p>Sleep Duration: ${log.duration} hours</p>
+                `;
+                recentLogsDiv.appendChild(logEntry);
+            });
+
+            // Basic analysis
+            const totalSleep = sleepLogs.reduce((sum, log) => sum + log.duration, 0);
+            const averageSleep = totalSleep / sleepLogs.length;
+
+            const analysisParagraph = document.createElement("p");
+            analysisParagraph.innerHTML = `
+                <strong>Average Sleep Duration (last ${sleepLogs.length} days):</strong> ${averageSleep.toFixed(2)} hours.
+            `;
+            sleepAnalysisDiv.appendChild(analysisParagraph);
+
+            // You can add more sophisticated analysis here, like streaks, trends, etc.
+        } else {
+            recentLogsDiv.innerHTML = "<p>No sleep logs found.</p>";
+            sleepAnalysisDiv.innerHTML = "";
+        }
+
+        // Keep navigation active state consistent
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.navigation ul li a');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === 'history.html') {
+                    link.parentNode.classList.add('active');
+                } else {
+                    link.parentNode.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Insights & Recommendations - ZEN-NAP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <style>
+        html,
+        body {
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background-color: #001019;
+            color: #e0f7fa;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            /* Align items to the start for better flow */
+            padding-top: 20px;
+            /* Add some top padding to avoid content touching the top */
+            box-sizing: border-box;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .navigation {
+            position: fixed;
+            width: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            transition: width 0.4s ease-in-out, opacity 0.4s ease-in-out, background-color 0.4s ease-in-out;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 20px 0;
+        }
+
+        .navigation:hover {
+            width: 180px;
+            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .navigation ul {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding: 20px 0;
+            margin: 0;
+        }
+
+        .navigation ul li {
+            position: relative;
+            width: 100%;
+            list-style: none;
+            z-index: 3;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 0 15px;
+            border-radius: 8px;
+            margin: 5px 0;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .navigation ul li:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .navigation ul li a {
+            position: relative;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+            text-decoration: none;
+            color: #eee;
+        }
+
+        .navigation ul li a .icon {
+            position: relative;
+            display: block;
+            min-width: 60px;
+            line-height: 60px;
+            font-size: 1.2em;
+            text-align: center;
+            transition: color 0.5s;
+            z-index: 5;
+        }
+
+        .navigation ul li.active a .icon {
+            color: #fff;
+        }
+
+        .navigation ul li a .text {
+            position: relative;
+            color: #eee;
+            font-weight: 400;
+            font-size: 0.9em;
+            letter-spacing: 0.05em;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
+
+        .navigation:hover ul li a .text {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .indicator {
+            position: absolute;
+            right: -10px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #37d1d1, #c09dcd);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.5s;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .indicator::before,
+        .indicator::after {
+            content: '';
+            position: absolute;
+            background: transparent;
+            border-radius: 50%;
+        }
+
+        .indicator::before {
+            top: -20px;
+            width: 30px;
+            height: 20px;
+            border-top-right-radius: 20px;
+            border-top-left-radius: 20px;
+        }
+
+        .indicator::after {
+            bottom: -20px;
+            width: 30px;
+            height: 20px;
+            border-bottom-right-radius: 20px;
+            border-bottom-left-radius: 20px;
+        }
+
+        #sleep-insights-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin-left: 110px;
+            /* Adjust based on navigation width */
+            box-sizing: border-box;
+            width: calc(100% - 140px);
+            /* Adjust based on navigation width and margin */
+            color: #e0f7fa;
+        }
+
+        #sleep-insights-container header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        #sleep-insights-container h2 {
+            color: #fff;
+            font-weight: 500;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        #sleep-insights-container .subtitle {
+            color: #ddd;
+            font-size: 1em;
+        }
+
+        .insights-section,
+        .recommendations-section,
+        .additional-resources {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            width: 90%;
+            max-width: 800px;
+            box-sizing: border-box;
+        }
+
+        .insights-section h3,
+        .recommendations-section h3,
+        .additional-resources h3 {
+            color: #37d1d1;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .insights-section p,
+        .recommendations-section p,
+        .additional-resources p,
+        .additional-resources ul li a {
+            color: #eee;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .insights-section ul,
+        .recommendations-section ul,
+        .additional-resources ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .insights-section ul li,
+        .recommendations-section ul li,
+        .additional-resources ul li {
+            color: #eee;
+            margin-bottom: 8px;
+        }
+
+        .additional-resources ul li a {
+            text-decoration: none;
+            color: #37d1d1;
+            transition: color 0.3s ease;
+        }
+
+        .additional-resources ul li a:hover {
+            color: #c09dcd;
+        }
+
+        #insights-box,
+        #recommendations-list {
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        #insights-box a,
+        #recommendations-list a {
+            color: #37d1d1;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navigation">
+        <ul>
+            <li class="list">
+                <a href="profile.html">
+                    <span class="icon"><ion-icon name="person-circle-outline"></ion-icon></span>
+                    <span class="text">Profile</span>
+                </a>
+            </li>
+            <li class="list">
+                <a href="music.html">
+                    <span class="icon"><ion-icon name="musical-notes-outline"></ion-icon></span>
+                    <span class="text">Music</span>
+                </a>
+            </li>
+            <li class="list">
+                <a href="progresstracker.html">
+                    <span class="icon"><ion-icon name="bar-chart-outline"></ion-icon></span>
+                    <span class="text">Progress</span>
+                </a>
+            </li>
+            <li class="list active">
+                <a href="recommendations.html">
+                    <span class="icon"><ion-icon name="thumbs-up-outline"></ion-icon></span>
+                    <span class="text">Interested</span>
+                </a>
+            </li>
+            <li class="list">
+                <a href="history.html">
+                    <span class="icon"><ion-icon name="time-outline"></ion-icon></span>
+                    <span class="text">History</span>
+                </a>
+            </li>
+            <li class="list">
+                <a href="sleeplog.html">
+                    <span class="icon"><ion-icon name="document-text-outline"></ion-icon></span>
+                    <span class="text">Log</span>
+                </a>
+            </li>
+            <li class="list">
+                <a href="loginform.html">
+                    <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+            <div class="indicator" style="transform: translateY(calc(70px * 3));"></div>
+        </ul>
+    </div>
+
+    <section id="sleep-insights-container">
+        <header>
+            <h2>Unlock Deeper Sleep: Insights & Personalized Tips</h2>
+            <p class="subtitle">Based on your logged sleep data, here are some areas we're focusing on to help you rest
+                better.</p>
+        </header>
+
+        <div class="insights-section">
+            <h3>Understanding Your Sleep Patterns</h3>
+            <p>Once you consistently log your sleep, this section will analyze trends in your:</p>
+            <ul>
+                <li><strong>Sleep Duration:</strong> Are you consistently getting the recommended 7-9 hours?</li>
+                <li><strong>Sleep Consistency:</strong> Are your bedtimes and wake-up times regular?</li>
+                <li><strong>Sleep Efficiency:</strong> How much of the time you spend in bed is actually spent sleeping?
+                </li>
+                <li><strong>Potential Disruptions:</strong> Identifying patterns of shorter sleep or inconsistent times.
+                </li>
+            </ul>
+            <div id="insights-box">
+                <p>Start logging your sleep data in the <a href="sleeplog.html">Sleep Log</a> to see personalized
+                    insights appear here!</p>
+            </div>
+        </div>
+
+        <div class="recommendations-section">
+            <h3>Personalized Recommendations</h3>
+            <p>Based on initial observations and as we learn more about your sleep, we'll provide tailored suggestions
+                such as:</p>
+            <ul>
+                <li><strong>Optimizing Your Sleep Schedule:</strong> Tips for establishing a consistent bedtime and
+                    wake-up routine.</li>
+                <li><strong>Creating a Relaxing Bedtime Routine:</strong> Ideas for calming activities before sleep.
+                </li>
+                <li><strong>Improving Your Sleep Environment:</strong> Suggestions for your bedroom's comfort
+                    (temperature, light, noise).</li>
+                <li><strong>Mindfulness and Relaxation Techniques:</strong> Guidance on practices to ease your mind
+                    before sleep.</li>
+                <li><strong>Potential Links to Lifestyle Factors:</strong> (e.g., caffeine intake, exercise timing -
+                    will require more advanced analysis).</li>
+            </ul>
+            <div id="recommendations-list">
+                <p>Once we have enough data, personalized recommendations will appear in this section.</p>
+            </div>
+        </div>
+
+        <div class="additional-resources">
+            <h3>Explore More for Better Sleep</h3>
+            <p>Here are some general resources and areas you might find helpful:</p>
+            <ul>
+                <li><a href="https://en.wikipedia.org/wiki/Sleep_cycle">Understanding Sleep Cycles</a></li>
+                <li><a href="https://www.webmd.com/sleep-disorders/insomnia-overview">Tips for Managing Insomnia</a>
+                </li>
+                <li><a href="https://www.thensf.org/setting-a-regular-sleep-schedule">The Importance of a Consistent
+                        Sleep Schedule</a></li>
+                <li><a href="https://www.thensf.org/how-to-make-a-sleep-friendly-bedroom">Creating a Sleep-Friendly
+                        Bedroom</a></li>
+            </ul>
+            <p>Stay tuned! We'll be adding more features and insights as you continue your journey to better sleep with
+                ZEN-NAP.</p>
+        </div>
+    </section>
+    <script>
+        // Basic script to keep the navigation active state
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.navigation ul li a');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === 'recommendations.html') {
+                    link.parentNode.classList.add('active');
+                } else {
+                    link.parentNode.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

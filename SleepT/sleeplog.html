@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Your Sleep - ZEN-NAP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        html,
+        body {
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background-color: #001019;
+            color: #e0f7fa;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            /* Keep flexbox for overall layout */
+            justify-content: center;
+            /* Center content horizontally */
+            align-items: center;
+            /* Center content vertically */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .navigation {
+            position: fixed;
+            width: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            transition: width 0.4s ease-in-out, opacity 0.4s ease-in-out, background-color 0.4s ease-in-out;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 20px 0;
+        }
+
+        .navigation:hover {
+            width: 180px;
+            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .navigation ul {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding: 20px 0;
+            margin: 0;
+        }
+
+        .navigation ul li {
+            position: relative;
+            width: 100%;
+            list-style: none;
+            z-index: 3;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 0 15px;
+            border-radius: 8px;
+            margin: 5px 0;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .navigation ul li:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .navigation ul li a {
+            position: relative;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+            text-decoration: none;
+            color: #eee;
+        }
+
+        .navigation ul li a .icon {
+            position: relative;
+            display: block;
+            min-width: 60px;
+            line-height: 60px;
+            font-size: 1.2em;
+            text-align: center;
+            transition: color 0.5s;
+            z-index: 5;
+        }
+
+        .navigation ul li.active a .icon {
+            color: #fff;
+        }
+
+        .navigation ul li a .text {
+            position: relative;
+            color: #eee;
+            font-weight: 400;
+            font-size: 0.9em;
+            letter-spacing: 0.05em;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
+
+        .navigation:hover ul li a .text {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .indicator {
+            position: absolute;
+            right: -10px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #37d1d1, #c09dcd);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.5s;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .indicator::before,
+        .indicator::after {
+            content: '';
+            position: absolute;
+            background: transparent;
+            border-radius: 50%;
+        }
+
+        .indicator::before {
+            top: -20px;
+            width: 30px;
+            height: 20px;
+            border-top-right-radius: 20px;
+            border-top-left-radius: 20px;
+        }
+
+        .indicator::after {
+            bottom: -20px;
+            width: 30px;
+            height: 20px;
+            border-bottom-right-radius: 20px;
+            border-bottom-left-radius: 20px;
+        }
+
+        #sleep-log-container {
+            /* flex-grow: 1; Remove this as we are centering the whole body */
+            display: flex;
+            justify-content: center;
+            /* Center the sleep log section */
+            align-items: center;
+            /* Center the sleep log section */
+            padding: 20px;
+            margin-left: 110px;
+            /* Add margin to the left to offset the fixed navigation */
+            box-sizing: border-box;
+            /* Ensure padding and margin are within the container's width */
+            width: calc(100% - 140px);
+            /* Adjust width to accommodate the navigation and some spacing */
+        }
+
+        #sleep-log {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        h2 {
+            color: #fff;
+            margin-bottom: 30px;
+            font-weight: 500;
+            font-size: 2em;
+        }
+
+        input[type="date"],
+        input[type="time"] {
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: #eee;
+            width: calc(100% - 24px);
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+
+        input[type="date"]:focus,
+        input[type="time"]:focus {
+            outline: none;
+            border-color: #37d1d1;
+            box-shadow: 0 0 8px rgba(55, 209, 209, 0.5);
+        }
+
+        button#save-log {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #37d1d1, #c09dcd);
+            color: #001019;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            font-weight: 500;
+        }
+
+        button#save-log:hover {
+            transform: scale(1.05);
+        }
+
+        button#save-log:focus {
+            outline: none;
+            box-shadow: 0 0 8px rgba(55, 209, 209, 0.5);
+        }
+    </style>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script src="scripts/sleeplog.js"></script>
+</head>
+
+<body>
+    <div class="navigation">
+        <ul>
+            <li class="list">
+                <a href="profile.html">
+                    <span class="icon"><ion-icon name="person-circle-outline"></ion-icon></span>
+                    <span class="text">Profile</span>
+                </a>
+            </li>
+            <li class="list">
+                <a href="music.html">
+                    <span class="icon"><ion-icon name="musical-notes-outline"></ion-icon></span>
+                    <span class="text">Music</span>
+                </a>
+            </li>
+            <li class="list">
+                <a href="progresstracker.html">
+                    <span class="icon"><ion-icon name="bar-chart-outline"></ion-icon></span>
+                    <span class="text">Progress</span>
+                </a>
+            </li>
+            <li class="list">
+                <a href="recomendations.html">
+                    <span class="icon"><ion-icon name="thumbs-up-outline"></ion-icon></span>
+                    <span class="text">Interested</span>
+                </a>
+            </li>
+            <li class="list">
+                <a href="history.html">
+                    <span class="icon"><ion-icon name="time-outline"></ion-icon></span>
+                    <span class="text">History</span>
+                </a>
+            </li>
+            <li class="list active">
+                <a href="sleeplog.html">
+                    <span class="icon"><ion-icon name="document-text-outline"></ion-icon></span>
+                    <span class="text">Log</span>
+                </a>
+            </li>
+            <li class="list">
+                <a href="loginform.html"> <span class="icon"><ion-icon
+                            name="log-out-outline"></ion-icon></span>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+            <div class="indicator" style="transform: translateY(calc(70px * 5));"></div>
+        </ul>
+    </div>
+
+    <div id="sleep-log-container">
+        <section id="sleep-log">
+            <h2>Log Your Sleep</h2>
+            <input type="date" id="sleep-date" required readonly>
+            <input type="time" id="sleep-time" required>
+            <input type="time" id="wake-time" required>
+            <p><strong>Duration:</strong> <span id="sleep-duration">0 hrs 0 mins</span></p>
+            <button id="save-log">Save Entry</button>
+        </section>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+    const sleepDateInput = document.getElementById("sleep-date");
+    const sleepTimeInput = document.getElementById("sleep-time");
+    const wakeTimeInput = document.getElementById("wake-time");
+    const sleepDurationOutput = document.getElementById("sleep-duration");
+    const saveLogButton = document.getElementById("save-log");
+
+    // Set today's date (readonly)
+    const today = new Date().toISOString().split("T")[0];
+    sleepDateInput.value = today;
+    sleepDateInput.setAttribute("readonly", true);
+
+    // Function to calculate sleep duration
+    function calculateDuration() {
+        const sleepTime = sleepTimeInput.value;
+        const wakeTime = wakeTimeInput.value;
+
+        if (sleepTime && wakeTime) {
+            const sleepDateTime = new Date(`${today}T${sleepTime}`);
+            let wakeDateTime = new Date(`${today}T${wakeTime}`);
+
+            if (wakeDateTime <= sleepDateTime) {
+                wakeDateTime.setDate(wakeDateTime.getDate() + 1); // Handle overnight sleep
+            }
+
+            const durationMs = wakeDateTime - sleepDateTime;
+            const hours = Math.floor(durationMs / 3600000);
+            const minutes = Math.floor((durationMs % 3600000) / 60000);
+
+            sleepDurationOutput.textContent = `${hours} hrs ${minutes} mins`;
+            return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00`;
+        }
+        return "00:00:00";
+    }
+
+    sleepTimeInput.addEventListener("input", calculateDuration);
+    wakeTimeInput.addEventListener("input", calculateDuration);
+
+    saveLogButton.addEventListener("click", () => {
+        const userId = localStorage.getItem("sleepid");
+        if (!userId) {
+            alert("User ID not found in localStorage.");
+            return;
+        }
+
+        const duration = calculateDuration();
+        const sleepData = {
+            userId,
+            sleepDate: sleepDateInput.value,
+            sleepTime: `${sleepDateInput.value} ${sleepTimeInput.value}:00`,
+            wakeTime: `${sleepDateInput.value} ${wakeTimeInput.value}:00`,
+            duration
+        };
+
+        fetch("save_sleep_log.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(sleepData)
+        })
+        .then(response => response.json())
+        .then(data => alert(data.message))
+        .catch(error => console.error("Error:", error));
+    });
+});
+
+        </script>
+        
+</body>    
+</html>

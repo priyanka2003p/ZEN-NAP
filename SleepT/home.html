@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZEN-NAP - Your Sleep Sanctuary</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        html,
+        body {
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background-color: #001019;
+            color: #e0f7fa;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .scene {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .sky {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at bottom, #0d1d31 0%, #000810 80%);
+        }
+
+        .trees {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background-image: url(tree.png);
+            background-size: cover;
+            background-position: bottom;
+            opacity: 0.8;
+        }
+
+        .aurora-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .aurora {
+            position: absolute;
+            bottom: -50%;
+            left: 0;
+            width: 100%;
+            height: 150%;
+            filter: blur(40px);
+            mix-blend-mode: screen;
+            animation: moveAurora 15s ease-in-out infinite alternate, swayAurora 12s ease-in-out infinite alternate;
+            opacity: 0.7;
+        }
+
+        .aurora1 {
+            background: linear-gradient(to top,
+                    rgba(0, 0, 0, 0) 0%,
+                    rgba(0, 180, 100, 0.3) 15%,
+                    rgba(0, 220, 100, 0.5) 25%,
+                    rgba(0, 255, 140, 0.7) 40%,
+                    rgba(0, 200, 255, 0.5) 60%,
+                    rgba(0, 150, 255, 0.3) 80%,
+                    rgba(0, 0, 0, 0) 100%);
+            animation-delay: 0s;
+        }
+
+        .aurora2 {
+            background: linear-gradient(to top,
+                    rgba(0, 0, 0, 0) 0%,
+                    rgba(150, 100, 200, 0.3) 15%,
+                    rgba(180, 80, 220, 0.5) 30%,
+                    rgba(200, 60, 240, 0.6) 45%,
+                    rgba(100, 180, 255, 0.5) 60%,
+                    rgba(80, 150, 255, 0.3) 80%,
+                    rgba(0, 0, 0, 0) 100%);
+            animation-delay: -5s;
+        }
+
+        .aurora3 {
+            background: linear-gradient(to top,
+                    rgba(0, 0, 0, 0) 0%,
+                    rgba(220, 150, 0, 0.3) 15%,
+                    rgba(255, 180, 0, 0.5) 30%,
+                    rgba(255, 200, 20, 0.6) 45%,
+                    rgba(50, 200, 255, 0.5) 60%,
+                    rgba(30, 180, 255, 0.3) 75%,
+                    rgba(0, 0, 0, 0) 100%);
+            animation-delay: -10s;
+        }
+
+        .aurora4 {
+            background: linear-gradient(to top,
+                    rgba(0, 0, 0, 0) 0%,
+                    rgba(140, 210, 0, 0.3) 10%,
+                    rgba(160, 255, 20, 0.5) 25%,
+                    rgba(180, 255, 40, 0.6) 40%,
+                    rgba(87, 113, 118, 0.5) 60%,
+                    rgba(107, 148, 181, 0.3) 80%,
+                    rgba(0, 0, 0, 0) 100%);
+            animation-delay: -15s;
+        }
+
+        @keyframes moveAurora {
+            0% {
+                transform: translateY(0) scaleY(1);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: translateY(-30%) scaleY(1.05);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(-60%) scaleY(1.1);
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes swayAurora {
+            0% {
+                transform: translateX(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateX(15%) rotate(3deg);
+            }
+
+            100% {
+                transform: translateX(-15%) rotate(-3deg);
+            }
+        }
+
+        /* Vertical Navigation Styles */
+        .navigation {
+            position: fixed;
+            width: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            transition: width 0.4s ease-in-out, opacity 0.4s ease-in-out, background-color 0.4s ease-in-out;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 20px 0;
+        }
+
+        .welcome-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #fff;
+            z-index: 10;
+            /* Ensure it's above the aurora */
+        }
+
+        .welcome-overlay h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .welcome-overlay h5 {
+            font-size: 1.3em;
+            font-weight: 400;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            /* Reset top margin to allow welcome overlay to be prominent */
+            padding: 20px;
+            margin-top: 60vh;
+            /* Push the card container down */
+        }
+
+        .navigation:hover {
+            width: 180px;
+            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .navigation ul {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding: 20px 0;
+            margin: 0;
+        }
+
+        .navigation ul li {
+            position: relative;
+            width: 100%;
+            list-style: none;
+            z-index: 3;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 0 15px;
+            border-radius: 8px;
+            margin: 5px 0;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .navigation ul li:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .navigation ul li a {
+            position: relative;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+            text-decoration: none;
+            color: #eee;
+        }
+
+        .navigation ul li a .icon {
+            position: relative;
+            display: block;
+            min-width: 60px;
+            line-height: 60px;
+            font-size: 1.2em;
+            text-align: center;
+            transition: color 0.5s;
+            z-index: 5;
+        }
+
+        .navigation ul li.active a .icon {
+            color: #fff;
+        }
+
+        .navigation ul li a .text {
+            position: relative;
+            color: #eee;
+            font-weight: 400;
+            font-size: 0.9em;
+            letter-spacing: 0.05em;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
+
+        .navigation:hover ul li a .text {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .indicator {
+            position: absolute;
+            right: -10px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #37d1d1, #c09dcd);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.5s;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .indicator::before,
+        .indicator::after {
+            content: '';
+            position: absolute;
+            background: transparent;
+            border-radius: 50%;
+        }
+
+        .indicator::before {
+            top: -20px;
+            width: 30px;
+            height: 20px;
+            border-top-right-radius: 20px;
+            border-top-left-radius: 20px;
+        }
+
+        .indicator::after {
+            bottom: -20px;
+            width: 30px;
+            height: 20px;
+            border-bottom-right-radius: 20px;
+            border-bottom-left-radius: 20px;
+        }
+
+        h1,
+        h5 {
+            color: #fff;
+            text-align: center;
+            font-weight: 600;
+            margin-top: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        h5 {
+            font-size: 1.1em;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: left;
+            margin-bottom: 20px;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+            /* Added margin to separate from header */
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0.8;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            opacity: 1;
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            filter: brightness(0.9);
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card h3 {
+            margin: 12px 0;
+            font-size: 1.3em;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .card p {
+            font-size: 0.95em;
+            color: #ccc;
+            line-height: 1.6;
+        }
+    </style>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+</head>
+
+<body>
+    <div class="scene">
+        <div class="sky"></div>
+        <div class="aurora-container">
+            <div class="aurora aurora1"></div>
+            <div class="aurora aurora2"></div>
+            <div class="aurora aurora3"></div>
+            <div class="aurora aurora4"></div>
+        </div>
+        <div class="welcome-overlay">
+            <h1>WELCOME TO ZEN-NAP!!</h1>
+            <h5>Ready to have a nap??</h5>
+        </div>
+        <div class="navigation">
+            <ul>
+                <li class="list">
+                    <a href="profile.html">
+                        <span class="icon"><ion-icon name="person-circle-outline"></ion-icon></span>
+                        <span class="text">Profile</span>
+                    </a>
+                </li>
+                <li class="list active">
+                    <a href="music.html">
+                        <span class="icon"><ion-icon name="musical-notes-outline"></ion-icon></span>
+                        <span class="text">Music</span>
+                    </a>
+                </li>
+                <li class="list">
+                    <a href="progresstracker.html">
+                        <span class="icon"><ion-icon name="bar-chart-outline"></ion-icon></span>
+                        <span class="text">Progress</span>
+                    </a>
+                </li>
+                <li class="list">
+                    <a href="recomendations.html">
+                        <span class="icon"><ion-icon name="thumbs-up-outline"></ion-icon></span>
+                        <span class="text">Interested</span>
+                    </a>
+                </li>
+                <li class="list">
+                    <a href="history.html">
+                        <span class="icon"><ion-icon name="time-outline"></ion-icon></span>
+                        <span class="text">History</span>
+                    </a>
+                </li>
+                <li class="list">
+                    <a href="sleeplog.html">
+                        <span class="icon"><ion-icon name="document-text-outline"></ion-icon></span>
+                        <span class="text">Log</span>
+                    </a>
+                </li>
+                <li class="list">
+                    <a href="loginform.html"> <!- UPDATED HREF -->
+                            <span class=" icon"><ion-icon name="log-out-outline"></ion-icon></span>
+                            <span class="text">Logout</span>
+                    </a>
+                </li>
+                <div class="indicator" style="transform: translateY(calc(70px * 1));"></div>
+            </ul>
+        </div>
+        <div class="trees"></div>
+    </div>
+
+    <div class="container" style="margin-top: 0;">
+        <div class="grid">
+            <div class="card">
+                <img src="../images/image1.jpg" alt="Sleep Tracking">
+                <div class="card-content">
+                    <p><strong>Esquire</strong></p>
+                    <h3>"Quality sleep fuels a productive day—track yours effortlessly</h3>
+                </div>
+            </div>
+            <div class="card">
+                <img src="../images/image2.jpg" alt="Lavender Aromatherapy">
+                <div class="card-content">
+                    <p><strong>Natural Remedies</strong></p>
+                    <h3>"Drift into a restful night with the calming aroma of lavender oil, your natural remedy for
+                        deep, rejuvenating sleep</h3>
+                </div>
+            </div>
+            <div class="card">
+                <img src="../images/image3.jpg" alt="Sleep Cycles">
+                <div class="card-content">
+                    <p><strong>Time</strong></p>
+                    <h3>Understand your sleep cycles and optimize your rest like never before</h3>
+                </div>
+            </div>
+            <div class="card">
+                <img src="../images/image4.jpg" alt="Reduce Blue Light">
+                <div class="card-content">
+                    <p><strong>Reduce ScreenTime</strong></p>
+                    <h3>Blue Light Exposure Before Bed Disrupts Sleep Patterns</h3>
+                </div>
+            </div>
+            <div class="card">
+                <img src="../images/image5.jpg" alt="Consistent Sleep Schedule">
+                <div class="card-content">
+                    <p><strong>Regular Sleep Schedules Linked to Better Health</strong></p>
+                    <h3>Experts emphasize that maintaining a consistent sleep schedule helps regulate the body's
+                        internal clock, leading to
+                        improved sleep quality and overall well-being.
+                    </h3>
+                </div>
+            </div>
+            <div class="card">
+                <img src="../images/image6.jpg" alt="Mind and Body Recharge">
+                <div class="card-content">
+                    <p><strong>Workout and yoga</strong></p>
+                    <h3>Recharge your mind and body—monitor your sleep and stay refreshed</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const list = document.querySelectorAll('.list');
+        function activeLink() {
+            list.forEach((item) =>
+                item.classList.remove('active'));
+            this.classList.add('active');
+        }
+        list.forEach((item) =>
+            item.addEventListener('click', activeLink));
+
+        // Keep navigation active state on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.navigation ul li a');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === 'music.html') {
+                    link.parentNode.classList.add('active');
+                } else {
+                    link.parentNode.classList.remove('active');
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
